@@ -29,3 +29,8 @@ export async function getLessons() {
 export async function createHomework(item) {
   return { id: Date.now(), ...item };
 }
+
+
+export async function createAnnouncement(item) {
+  return { id: Date.now(), ...item };
+}
