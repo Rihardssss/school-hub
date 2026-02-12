@@ -21,6 +21,7 @@ function Register({ setPage }) {
     <div className="center">
       <div className="card">
         <h1>Reģistrēties</h1>
+        <div className="muted">Izveido kontu un turpini uz paneli</div>
 
         <input
           value={email}
@@ -35,11 +36,11 @@ function Register({ setPage }) {
           type="password"
         />
 
-        <button onClick={handleRegister}>Izveidot kontu</button>
+        <button className="btnPrimary" onClick={handleRegister}>Izveidot kontu</button>
 
-        {msg && <div>{msg}</div>}
+        {msg && <div className="muted">{msg}</div>}
 
-        <button onClick={() => setPage("login")}>Atpakaļ</button>
+        <button className="btnGhost" onClick={() => setPage("login")}>Atpakaļ</button>
       </div>
     </div>
   );

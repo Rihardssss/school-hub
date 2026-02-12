@@ -1,12 +1,23 @@
+:root {
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: #111827;
+  background: #f3f6fc;
+  line-height: 1.45;
+  font-weight: 400;
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #0b1120;
-  color: white;
+  min-height: 100vh;
+  background: #eef2f7;
+}
+
+#root {
+  min-height: 100vh;
 }
 
 .center {
@@ -14,27 +25,273 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
 }
 
 .card {
-  background: #1e293b;
-  padding: 32px;
-  border-radius: 16px;
-  width: 360px;
+  width: min(420px, 100%);
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
-input {
-  padding: 12px;
+h1 {
+  margin: 0;
+  font-size: 1.7rem;
+  color: #0f172a;
+}
+
+h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #0f172a;
+}
+
+input,
+select {
+  width: 100%;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
-  border: none;
+  background: #fff;
+  padding: 11px 12px;
+  font-size: 0.97rem;
+  outline: none;
+}
+
+input:focus,
+select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.12);
 }
 
 button {
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.12s ease;
+}
+
+button:hover {
+  filter: brightness(0.98);
+}
+
+.btnPrimary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.btnGhost {
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
+.btnDanger {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.errorText {
+  color: #b91c1c;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.muted {
+  color: #6b7280;
+}
+
+.layout {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 28px 20px 34px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.titleBlock p {
+  margin: 4px 0 0;
+  color: #64748b;
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.statCard,
+.panel {
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  box-shadow: none;
+}
+
+.statCard {
+  padding: 16px;
+}
+
+.statCard .value {
+  display: block;
+  margin-top: 6px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.panel {
+  margin-top: 14px;
+  padding: 18px;
+}
+
+.quickActions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.listItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
   padding: 12px;
   border-radius: 8px;
-  border: none;
-  cursor: pointer;
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+}
+
+.listItem strong {
+  color: #0f172a;
+}
+
+.actionsRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+textarea {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  padding: 11px 12px;
+  font-size: 0.97rem;
+  outline: none;
+  resize: vertical;
+  min-height: 120px;
+}
+
+textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.12);
+}
+
+.mailLayout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 12px;
+}
+
+.mailItem {
+  text-align: left;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  color: #111827;
+}
+
+.activeMail {
+  background: #e8eefc;
+  border-color: #bfdbfe;
+}
+
+.mailTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.unreadDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #2563eb;
+}
+
+.mailBody {
+  white-space: pre-wrap;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.dayTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.scheduleTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 980px;
+  font-size: 0.9rem;
+}
+
+.scheduleTable th,
+.scheduleTable td {
+  border: 1px solid #e5e7eb;
+  padding: 9px 10px;
+  vertical-align: top;
+  text-align: left;
+}
+
+.scheduleTable thead th {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.scheduleTable tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+@media (max-width: 860px) {
+  .grid3,
+  .quickActions {
+    grid-template-columns: 1fr;
+  }
+
+  .mailLayout {
+    grid-template-columns: 1fr;
+  }
 }

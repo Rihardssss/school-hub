@@ -87,3 +87,60 @@ export async function getLessons() {
   writeItems("lessons", seed);
   return seed;
 }
+
+export async function getMessages() {
+  const saved = readItems("messages");
+  if (saved.length) return saved;
+
+  const seed = [
+    {
+      id: 1,
+      from: "Stepanova Jeļena",
+      to: "Tu",
+      subject: "Mājasdarbs par Conditionals",
+      body: "Lūdzu atkārtot 1st, 2nd un 3rd conditionals pirms nākamās stundas.",
+      read: false,
+      createdAt: Date.now() - 1000 * 60 * 60 * 6,
+    },
+    {
+      id: 2,
+      from: "Medvedevs Vladislavs",
+      to: "Tu",
+      subject: "Programmēšanas tehnoloģijas stunda",
+      body: "Nākamajā nodarbībā turpināsim darbu ar praktisko uzdevumu.",
+      read: true,
+      createdAt: Date.now() - 1000 * 60 * 60 * 24,
+    },
+  ];
+  writeItems("messages", seed);
+  return seed;
+}
+
+export async function createMessage(item) {
+  const items = readItems("messages");
+  const newItem = {
+    id: Date.now(),
+    from: "Tu",
+    to: item.to?.trim() || "Skolotājs",
+    subject: item.subject?.trim() || "(Bez temata)",
+    body: item.body?.trim() || "",
+    read: true,
+    createdAt: Date.now(),
+  };
+  writeItems("messages", [newItem, ...items]);
+  return newItem;
+}
+
+export async function toggleMessageRead(id) {
+  const items = readItems("messages");
+  const next = items.map((m) => (m.id === id ? { ...m, read: !m.read } : m));
+  writeItems("messages", next);
+  return next.find((m) => m.id === id);
+}
+
+export async function deleteMessage(id) {
+  const items = readItems("messages");
+  const next = items.filter((m) => m.id !== id);
+  writeItems("messages", next);
+  return { ok: true };
+}

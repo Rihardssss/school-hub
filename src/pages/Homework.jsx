@@ -30,10 +30,16 @@ function Homework({ setPage }) {
   };
 
   return (
-    <div className="center">
-      <div className="card">
-        <h1>Mājasdarbi</h1>
+    <div className="layout">
+      <div className="topbar">
+        <div className="titleBlock">
+          <h1>Mājasdarbi</h1>
+          <p>Pievieno un pārvaldi uzdevumus vienuviet</p>
+        </div>
+        <button className="btnGhost" onClick={() => setPage("dashboard")}>Atpakaļ</button>
+      </div>
 
+      <div className="panel stack">
         <input
           placeholder="Priekšmets (Matemātika)"
           value={subject}
@@ -44,24 +50,19 @@ function Homework({ setPage }) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+        <button className="btnPrimary" onClick={add}>Pievienot</button>
+      </div>
 
-        <button onClick={add}>Pievienot</button>
-
-        <div>
-          {homework.map((h) => (
-            <div
-              key={h.id}
-              style={{ display: "flex", justifyContent: "space-between", gap: 12 }}
-            >
-              <span>
-                {h.subject} - {h.title}
-              </span>
-              <button onClick={() => remove(h.id)}>Dzēst</button>
-            </div>
-          ))}
-        </div>
-
-        <button onClick={() => setPage("dashboard")}>Atpakaļ</button>
+      <div className="panel stack">
+        {homework.length === 0 && <div className="muted">Vēl nav neviena mājasdarba.</div>}
+        {homework.map((h) => (
+          <div key={h.id} className="listItem">
+            <span>
+              <strong>{h.subject}</strong> - {h.title}
+            </span>
+            <button className="btnDanger" onClick={() => remove(h.id)}>Dzēst</button>
+          </div>
+        ))}
       </div>
     </div>
   );

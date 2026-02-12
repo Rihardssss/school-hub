@@ -5,6 +5,8 @@ import Dashboard from "./pages/Dashboard";
 import Homework from "./pages/Homework";
 import Schedule from "./pages/Schedule";
 import Announcements from "./pages/Announcements";
+import Messages from "./pages/Messages";
+import Progress from "./pages/Progress";
 
 function App() {
   const [page, setPage] = useState("login");
@@ -31,6 +33,14 @@ function App() {
 
   if (page === "announcements") {
     return <Announcements setPage={setPage} />;
+  }
+
+  if (page === "messages") {
+    return <Messages setPage={setPage} />;
+  }
+
+  if (page === "progress") {
+    return <Progress setPage={setPage} />;
   }
 
   return (

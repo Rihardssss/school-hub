@@ -35,11 +35,11 @@ function Login({ setPage }) {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button onClick={handleLogin}>Ielogoties</button>
+        <button className="btnPrimary" onClick={handleLogin}>Ielogoties</button>
 
-        <button onClick={() => setPage("register")}>Reģistrēties</button>
+        <button className="btnGhost" onClick={() => setPage("register")}>Reģistrēties</button>
 
-        {error && <div style={{ color: "red" }}>{error}</div>}
+        {error && <div className="errorText">{error}</div>}
       </div>
     </div>
   );
