@@ -43,4 +43,6 @@ function Login({ setPage }) {
   );
 }
 
+<button onClick={() => setPage("register")}>Register</button>
+
 export default Login;

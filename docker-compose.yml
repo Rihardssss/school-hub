@@ -1,0 +1,27 @@
+services:
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    container_name: schoolhub-db
+    environment:
+      POSTGRES_DB: schoolhub
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: schoolhub-app
+    ports:
+      - "5173:5173"
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
