@@ -1,8 +1,6 @@
 services:
   db:
-    build:
-      context: .
-      dockerfile: Dockerfile.postgres
+    image: schoolhub-db
     container_name: schoolhub-db
     environment:
       POSTGRES_DB: schoolhub
@@ -14,9 +12,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: schoolhub-app
     container_name: schoolhub-app
     ports:
       - "5173:5173"

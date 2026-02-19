@@ -26,25 +26,25 @@ function Announcements({ setPage }) {
   return (
     <div className="center">
       <div className="card">
-        <h1>Announcements</h1>
+        <h1>Paziņojumi</h1>
 
         <input
-          placeholder="New announcement..."
+          placeholder="Jauns paziņojums..."
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <button onClick={add}>Add</button>
+        <button onClick={add}>Pievienot</button>
 
         <div>
           {items.map(a => (
             <div key={a.id} style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
               <span>{a.title}</span>
-              <button onClick={() => remove(a.id)}>X</button>
+              <button onClick={() => remove(a.id)}>Dzēst</button>
             </div>
           ))}
         </div>
 
-        <button onClick={() => setPage("dashboard")}>Back</button>
+        <button onClick={() => setPage("dashboard")}>Atpakaļ</button>
       </div>
     </div>
   );

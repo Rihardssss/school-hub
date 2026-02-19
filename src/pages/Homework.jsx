@@ -26,37 +26,42 @@ function Homework({ setPage }) {
   };
 
   const remove = (id) => {
-    setHomework(homework.filter(h => h.id !== id));
+    setHomework(homework.filter((h) => h.id !== id));
   };
 
   return (
     <div className="center">
       <div className="card">
-        <h1>Homework</h1>
+        <h1>Mājasdarbi</h1>
 
         <input
-          placeholder="Subject (Math)"
+          placeholder="Priekšmets (Matemātika)"
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
         />
         <input
-          placeholder="Task (p.45 uzd.3)"
+          placeholder="Uzdevums (45. lpp. 3. uzd.)"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
 
-        <button onClick={add}>Add</button>
+        <button onClick={add}>Pievienot</button>
 
         <div>
-          {homework.map(h => (
-            <div key={h.id} style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-              <span>{h.subject} - {h.title}</span>
-              <button onClick={() => remove(h.id)}>X</button>
+          {homework.map((h) => (
+            <div
+              key={h.id}
+              style={{ display: "flex", justifyContent: "space-between", gap: 12 }}
+            >
+              <span>
+                {h.subject} - {h.title}
+              </span>
+              <button onClick={() => remove(h.id)}>Dzēst</button>
             </div>
           ))}
         </div>
 
-        <button onClick={() => setPage("dashboard")}>Back</button>
+        <button onClick={() => setPage("dashboard")}>Atpakaļ</button>
       </div>
     </div>
   );

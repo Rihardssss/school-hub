@@ -12,37 +12,37 @@ function Login({ setPage }) {
       await loginUser(email, password);
       setPage("dashboard");
     } catch {
-      setError("Wrong email or password");
+      setError("Nepareizs e-pasts vai parole");
     }
   };
 
   return (
     <div className="center">
       <div className="card">
-        <h1>Login</h1>
+        <h1>Ielogošanās</h1>
 
         <input
           type="email"
-          placeholder="Email"
+          placeholder="E-pasts"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
           type="password"
-          placeholder="Password"
+          placeholder="Parole"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button onClick={handleLogin}>Login</button>
+        <button onClick={handleLogin}>Ielogoties</button>
+
+        <button onClick={() => setPage("register")}>Reģistrēties</button>
 
         {error && <div style={{ color: "red" }}>{error}</div>}
       </div>
     </div>
   );
 }
-
-<button onClick={() => setPage("register")}>Register</button>
 
 export default Login;

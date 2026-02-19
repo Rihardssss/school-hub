@@ -15,7 +15,7 @@ function Schedule({ setPage }) {
   return (
     <div className="center">
       <div className="card">
-        <h1>Schedule</h1>
+        <h1>Stundu saraksts</h1>
 
         {lessons.map(l => (
           <div key={l.id}>
@@ -23,7 +23,7 @@ function Schedule({ setPage }) {
           </div>
         ))}
 
-        <button onClick={() => setPage("dashboard")}>Back</button>
+        <button onClick={() => setPage("dashboard")}>Atpakaļ</button>
       </div>
     </div>
   );
