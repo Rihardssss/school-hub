@@ -1,146 +1,103 @@
-function readUsers() {
-  try { return JSON.parse(localStorage.getItem("users") || "[]"); }
-  catch { return []; }
-}
-
-function writeUsers(users) {
-  localStorage.setItem("users", JSON.stringify(users));
-}
+const API = "/api";
 
 export async function registerUser(email, password) {
-  const e = email.trim().toLowerCase();
-  const p = password.trim();
-  if (!e || !p) throw new Error("Missing");
-  const users = readUsers();
-  if (users.some(u => u.email === e)) throw new Error("Exists");
-  const newUser = { id: Date.now(), email: e, password: p, name: e.split("@")[0] };
-  writeUsers([newUser, ...users]);
-  return { ok: true };
+  const res = await fetch(`${API}/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ email, password })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Register failed");
+  return data;
 }
 
 export async function loginUser(email, password) {
-  const e = email.trim().toLowerCase();
-  const p = password.trim();
-  const users = readUsers();
-  const found = users.find(u => u.email === e && u.password === p);
-
-  if (!found) {
-    if (e === "test@test.com" && p === "1234") {
-      localStorage.setItem("token", "fake_token_123");
-      localStorage.setItem("me", JSON.stringify({ name: "Rihards", email: e }));
-      return { token: "fake_token_123", user: { name: "Rihards" } };
-    }
-    throw new Error("Invalid credentials");
-  }
-
-  localStorage.setItem("token", "fake_token_" + found.id);
-  localStorage.setItem("me", JSON.stringify({ name: found.name, email: found.email }));
-  return { token: "fake_token_" + found.id, user: { name: found.name } };
+  const res = await fetch(`${API}/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ email, password })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Invalid credentials");
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("me", JSON.stringify(data.user));
+  return data;
 }
 
 export async function getCurrentUser() {
-  const me = localStorage.getItem("me");
-  if (!me) throw new Error("Not logged in");
-  return JSON.parse(me);
-}
-
-function readItems(key) {
-  try { return JSON.parse(localStorage.getItem(key) || "[]"); }
-  catch { return []; }
-}
-
-function writeItems(key, items) {
-  localStorage.setItem(key, JSON.stringify(items));
+  const res = await fetch(`${API}/me`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Not logged in");
+  return data;
 }
 
 export async function getAnnouncements() {
-  return readItems("announcements");
+  const res = await fetch(`${API}/announcements`);
+  return res.json();
 }
 
 export async function createAnnouncement(item) {
-  const items = readItems("announcements");
-  const newItem = { id: Date.now(), ...item };
-  writeItems("announcements", [newItem, ...items]);
-  return newItem;
+  const res = await fetch(`${API}/announcements`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(item)
+  });
+  return res.json();
 }
 
 export async function getHomework() {
-  return readItems("homework");
+  const res = await fetch(`${API}/homework`);
+  return res.json();
 }
 
 export async function createHomework(item) {
-  const items = readItems("homework");
-  const newItem = { id: Date.now(), ...item };
-  writeItems("homework", [newItem, ...items]);
-  return newItem;
+  const res = await fetch(`${API}/homework`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(item)
+  });
+  return res.json();
 }
 
 export async function getLessons() {
-  const saved = readItems("lessons");
-  if (saved.length) return saved;
-
-  const seed = [
-    { id: 1, day: "Mon", time: "09:10", subject: "Math", room: "210" },
-    { id: 2, day: "Mon", time: "10:00", subject: "English", room: "105" },
-    { id: 3, day: "Tue", time: "09:10", subject: "IT", room: "301" }
-  ];
-  writeItems("lessons", seed);
-  return seed;
+  const res = await fetch(`${API}/lessons`);
+  return res.json();
 }
 
 export async function getMessages() {
-  const saved = readItems("messages");
-  if (saved.length) return saved;
-
-  const seed = [
-    {
-      id: 1,
-      from: "Stepanova Jeļena",
-      to: "Tu",
-      subject: "Mājasdarbs par Conditionals",
-      body: "Lūdzu atkārtot 1st, 2nd un 3rd conditionals pirms nākamās stundas.",
-      read: false,
-      createdAt: Date.now() - 1000 * 60 * 60 * 6,
-    },
-    {
-      id: 2,
-      from: "Medvedevs Vladislavs",
-      to: "Tu",
-      subject: "Programmēšanas tehnoloģijas stunda",
-      body: "Nākamajā nodarbībā turpināsim darbu ar praktisko uzdevumu.",
-      read: true,
-      createdAt: Date.now() - 1000 * 60 * 60 * 24,
-    },
-  ];
-  writeItems("messages", seed);
-  return seed;
+  const res = await fetch(`${API}/messages`);
+  return res.json();
 }
 
 export async function createMessage(item) {
-  const items = readItems("messages");
-  const newItem = {
-    id: Date.now(),
-    from: "Tu",
-    to: item.to?.trim() || "Skolotājs",
-    subject: item.subject?.trim() || "(Bez temata)",
-    body: item.body?.trim() || "",
-    read: true,
-    createdAt: Date.now(),
-  };
-  writeItems("messages", [newItem, ...items]);
-  return newItem;
-}
-
-export async function toggleMessageRead(id) {
-  const items = readItems("messages");
-  const next = items.map((m) => (m.id === id ? { ...m, read: !m.read } : m));
-  writeItems("messages", next);
-  return next.find((m) => m.id === id);
+  const res = await fetch(`${API}/messages`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(item)
+  });
+  return res.json();
 }
 
 export async function deleteMessage(id) {
-  const items = readItems("messages");
-  const next = items.filter((m) => m.id !== id);
-  writeItems("messages", next);
-  return { ok: true };
+  const res = await fetch(`${API}/messages/${id}`, {
+    method: "DELETE"
+  });
+  return res.json();
+}
+
+export async function toggleMessageRead(id) {
+  const res = await fetch(`${API}/messages/${id}/toggle-read`, {
+    method: "PATCH"
+  });
+  return res.json();
 }
