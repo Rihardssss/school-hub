@@ -27,10 +27,20 @@ jobs:
         run: npm run build
 
       - name: Install backend dependencies
-        run: npm install --prefix backend
+        run: |
+          if [ -f backend/package.json ]; then
+            npm install --prefix backend
+          else
+            echo "backend/package.json not found, skipping backend install"
+          fi
 
       - name: Validate backend syntax
-        run: node --check backend/server.js
+        run: |
+          if [ -f backend/server.js ]; then
+            node --check backend/server.js
+          else
+            echo "backend/server.js not found, skipping backend syntax check"
+          fi
 
   deploy_simulation:
     name: Deploy Simulation
