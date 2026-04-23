@@ -52,11 +52,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Stop old containers
-        run: docker compose down || true
-
-      - name: Build and start containers
-        run: docker compose up -d --build
-
-      - name: Show running containers
-        run: docker ps
+      - name: Deploy containers
+        run: |
+          cd /Users/rihardsindars/schoolhub
+          docker compose down || true
+          docker compose up -d --build
+          docker ps
