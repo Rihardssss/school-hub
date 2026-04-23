@@ -9,7 +9,7 @@ on:
 jobs:
   ci:
     name: CI Checks
-    runs-on: self-hosted
+    runs-on: [self-hosted, macOS, X64]
 
     steps:
       - name: Checkout code
@@ -44,7 +44,7 @@ jobs:
 
   deploy:
     name: Docker Deploy
-    runs-on: self-hosted
+    runs-on: [self-hosted, macOS, X64]
     needs: ci
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
