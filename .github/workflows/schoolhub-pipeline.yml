@@ -1,4 +1,4 @@
-name: SchoolHub CI/CD Simulation
+name: SchoolHub CI/CD
 
 on:
   push:
@@ -13,12 +13,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: "20"
 
       - name: Install frontend dependencies
         run: npm install
@@ -42,17 +42,21 @@ jobs:
             echo "backend/server.js not found, skipping backend syntax check"
           fi
 
-  deploy_simulation:
-    name: Deploy Simulation
+  deploy:
+    name: Docker Deploy
     runs-on: self-hosted
     needs: ci
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
-      - name: Simulate deploy to server
-        run: |
-          echo "Deploying SchoolHub to simulated server..."
-          echo "Build passed, deployment step completed."
+      - name: Stop old containers
+        run: docker compose down || true
+
+      - name: Build and start containers
+        run: docker compose up -d --build
+
+      - name: Show running containers
+        run: docker ps
