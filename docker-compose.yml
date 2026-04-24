@@ -1,23 +1,24 @@
 services:
   db:
-    image: schoolhub-db
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
     container_name: schoolhub-db
-    environment:
-      POSTGRES_DB: schoolhub
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: admin
     ports:
       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
   app:
-    image: schoolhub-app
+    image: node:20-alpine
     container_name: schoolhub-app
+    working_dir: /app
     ports:
-      - "5173:5173"
-    depends_on:
-      - db
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./dist:/app/dist:ro
+    command: sh -c "npm install && npm start"
 
 volumes:
   pgdata:

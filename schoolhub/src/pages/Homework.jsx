@@ -14,6 +14,7 @@ function Homework({ setPage }) {
     load();
   }, []);
 
+  
   const add = async () => {
     const s = subject.trim();
     const t = title.trim();

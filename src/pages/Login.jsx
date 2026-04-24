@@ -19,7 +19,7 @@ function Login({ setPage }) {
   return (
     <div className="center">
       <div className="card">
-        <h1>Ielogošanās</h1>
+        <h1>Ielogošanās succes</h1>
 
         <input
           type="email"

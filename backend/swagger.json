@@ -1,0 +1,194 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "SchoolHub API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/register": {
+      "post": {
+        "summary": "Register user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registered"
+          }
+        }
+      }
+    },
+    "/api/login": {
+      "post": {
+        "summary": "Login user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logged in"
+          }
+        }
+      }
+    },
+    "/api/me": {
+      "get": {
+        "summary": "Get current user",
+        "responses": {
+          "200": {
+            "description": "Current user"
+          }
+        }
+      }
+    },
+    "/api/announcements": {
+      "get": {
+        "summary": "Get announcements",
+        "responses": {
+          "200": {
+            "description": "Announcements list"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create announcement",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string" },
+                  "body": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created announcement"
+          }
+        }
+      }
+    },
+    "/api/homework": {
+      "get": {
+        "summary": "Get homework",
+        "responses": {
+          "200": {
+            "description": "Homework list"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create homework",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "subject": { "type": "string" },
+                  "title": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created homework"
+          }
+        }
+      }
+    },
+    "/api/lessons": {
+      "get": {
+        "summary": "Get lessons",
+        "responses": {
+          "200": {
+            "description": "Lessons list"
+          }
+        }
+      }
+    },
+    "/api/messages": {
+      "get": {
+        "summary": "Get messages",
+        "responses": {
+          "200": {
+            "description": "Messages list"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create message",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "to": { "type": "string" },
+                  "subject": { "type": "string" },
+                  "body": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created message"
+          }
+        }
+      }
+    },
+    "/api/messages/{id}": {
+      "delete": {
+        "summary": "Delete message",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          }
+        }
+      }
+    }
+  }
+}
