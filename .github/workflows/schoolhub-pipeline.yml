@@ -55,6 +55,9 @@ jobs:
       - name: Deploy containers
         run: |
           cd /Users/rihardsindars/schoolhub
+          git pull origin main
+          npm install
+          npm run build
           docker compose down || true
           docker compose up -d --build
           docker ps
