@@ -9,6 +9,9 @@ lerna-debug.log*
 
 node_modules
 dist
+
+# Local clone of this repo (do not commit)
+school-hub/
 dist-ssr
 *.local
 
