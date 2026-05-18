@@ -5,6 +5,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: true,
-    allowedHosts: ['panel.riciboy.eu']
-  }
+    allowedHosts: ['panel.riciboy.eu'],
+    proxy: {
+      '/api': 'http://127.0.0.1:8000',
+      '/endpoints': 'http://127.0.0.1:8000',
+    },
+  },
 })

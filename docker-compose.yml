@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile.postgres
     container_name: schoolhub-db
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
