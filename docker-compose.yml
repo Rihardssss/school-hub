@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile.postgres
     container_name: schoolhub-db
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -16,6 +17,7 @@ services:
   app:
     image: node:20-alpine
     container_name: schoolhub-app
+    restart: unless-stopped
     working_dir: /app
     ports:
       - "8000:8000"
