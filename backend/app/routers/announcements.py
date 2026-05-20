@@ -6,7 +6,7 @@ from app.database import get_db
 from app.models.announcement import Announcement
 from app.models.activity_log import ActivityLog
 from app.schemas.announcement import AnnouncementCreate, AnnouncementUpdate, AnnouncementResponse
-from app.utils.auth import get_current_user
+from app.utils.auth import get_current_user, require_roles
 from app.models.user import User
 
 router = APIRouter(prefix="/api/announcements", tags=["announcements"])
@@ -29,7 +29,7 @@ def list_announcements(
 def create_announcement(
     payload: AnnouncementCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_roles(["teacher", "admin"])),
 ):
     announcement = Announcement(**payload.model_dump(), author_id=current_user.id)
     db.add(announcement)
@@ -69,12 +69,13 @@ def update_announcement(
 def delete_announcement(
     ann_id: UUID,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_roles(["teacher", "admin"])),
 ):
     ann = db.get(Announcement, ann_id)
     if not ann:
         raise HTTPException(status_code=404, detail="Announcement not found")
-    if ann.author_id != current_user.id:
+    # Admin can delete anyone's; teacher only their own
+    if current_user.role != "admin" and ann.author_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not allowed to delete this announcement")
 
     db.delete(ann)

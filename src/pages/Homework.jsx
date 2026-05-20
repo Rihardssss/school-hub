@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
 import Layout from '../components/Layout';
+import { useAuth } from '../context/AuthContext';
 
 const STATUS_LV = { pending: 'Nepaveikts', submitted: 'Iesniegts', done: 'Pabeigts' };
 const STATUS_STYLES = {
@@ -10,6 +11,8 @@ const STATUS_STYLES = {
 };
 
 export default function Homework() {
+  const { user } = useAuth();
+  const canManage = user?.role === 'teacher' || user?.role === 'admin';
   const [subjects, setSubjects] = useState([]);
   const [homework, setHomework] = useState([]);
 
@@ -78,23 +81,25 @@ export default function Homework() {
       {/* ── Subjects ─────────────────────────────────────────── */}
       <h2>Priekšmeti</h2>
       <div className="panel stack">
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <input
-            placeholder="Priekšmeta nosaukums"
-            value={subjName}
-            onChange={(e) => setSubjName(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && addSubject()}
-            style={{ flex: 1 }}
-          />
-          <input
-            type="color"
-            value={subjColor}
-            onChange={(e) => setSubjColor(e.target.value)}
-            style={{ width: 44, padding: 2, cursor: 'pointer' }}
-            title="Krāsa"
-          />
-          <button className="btnPrimary" onClick={addSubject}>Pievienot</button>
-        </div>
+        {canManage && (
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <input
+              placeholder="Priekšmeta nosaukums"
+              value={subjName}
+              onChange={(e) => setSubjName(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && addSubject()}
+              style={{ flex: 1 }}
+            />
+            <input
+              type="color"
+              value={subjColor}
+              onChange={(e) => setSubjColor(e.target.value)}
+              style={{ width: 44, padding: 2, cursor: 'pointer' }}
+              title="Krāsa"
+            />
+            <button className="btnPrimary" onClick={addSubject}>Pievienot</button>
+          </div>
+        )}
 
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', minHeight: 32 }}>
           {subjects.length === 0 && <span className="muted">Vēl nav priekšmetu.</span>}
@@ -105,10 +110,12 @@ export default function Homework() {
               borderRadius: 20, padding: '3px 10px',
             }}>
               <span style={{ color: s.color, fontWeight: 600, fontSize: '0.9rem' }}>{s.name}</span>
-              <button
-                onClick={() => deleteSubject(s.id)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: s.color, fontWeight: 700, padding: '0 2px', fontSize: '1rem' }}
-              >×</button>
+              {canManage && (
+                <button
+                  onClick={() => deleteSubject(s.id)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: s.color, fontWeight: 700, padding: '0 2px', fontSize: '1rem' }}
+                >×</button>
+              )}
             </span>
           ))}
         </div>

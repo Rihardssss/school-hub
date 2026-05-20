@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
 import Layout from '../components/Layout';
+import { useAuth } from '../context/AuthContext';
 
 const DAYS = ['', 'Pirmdiena', 'Otrdiena', 'Trešdiena', 'Ceturtdiena', 'Piektdiena'];
 
 export default function Schedule() {
+  const { user } = useAuth();
+  const canManage = user?.role === 'teacher' || user?.role === 'admin';
   const [entries,     setEntries]     = useState([]);
   const [subjects,    setSubjects]    = useState([]);
   const [selectedDay, setSelectedDay] = useState(1);
@@ -85,30 +88,34 @@ export default function Schedule() {
               </span>
               {e.room && <span className="muted">· {e.room}</span>}
             </div>
-            <button className="btnDanger btnSmall" onClick={() => deleteEntry(e.id)}>Dzēst</button>
+            {canManage && <button className="btnDanger btnSmall" onClick={() => deleteEntry(e.id)}>Dzēst</button>}
           </div>
         ))}
       </div>
 
-      {/* Add form */}
-      <h2 style={{ marginTop: 20 }}>Pievienot stundu</h2>
-      <div className="panel stack">
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <select value={fSubjectId} onChange={(e) => setFSubjectId(e.target.value)} style={{ flex: 1 }}>
-            {subjects.length === 0 && <option value="">— pievienojiet priekšmetus vispirms —</option>}
-            {subjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-          </select>
-          <select value={fDay} onChange={(e) => setFDay(Number(e.target.value))} style={{ width: 140 }}>
-            {[1, 2, 3, 4, 5].map((d) => <option key={d} value={d}>{DAYS[d]}</option>)}
-          </select>
-        </div>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <input type="time" value={fStart} onChange={(e) => setFStart(e.target.value)} style={{ width: 120 }} />
-          <input type="time" value={fEnd}   onChange={(e) => setFEnd(e.target.value)}   style={{ width: 120 }} />
-          <input placeholder="Telpa (piem. 301)" value={fRoom} onChange={(e) => setFRoom(e.target.value)} style={{ flex: 1 }} />
-          <button className="btnPrimary" onClick={addEntry} disabled={!fSubjectId}>Pievienot</button>
-        </div>
-      </div>
+      {/* Add form — teachers and admins only */}
+      {canManage && (
+        <>
+          <h2 style={{ marginTop: 20 }}>Pievienot stundu</h2>
+          <div className="panel stack">
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <select value={fSubjectId} onChange={(e) => setFSubjectId(e.target.value)} style={{ flex: 1 }}>
+                {subjects.length === 0 && <option value="">— pievienojiet priekšmetus vispirms —</option>}
+                {subjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+              </select>
+              <select value={fDay} onChange={(e) => setFDay(Number(e.target.value))} style={{ width: 140 }}>
+                {[1, 2, 3, 4, 5].map((d) => <option key={d} value={d}>{DAYS[d]}</option>)}
+              </select>
+            </div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <input type="time" value={fStart} onChange={(e) => setFStart(e.target.value)} style={{ width: 120 }} />
+              <input type="time" value={fEnd}   onChange={(e) => setFEnd(e.target.value)}   style={{ width: 120 }} />
+              <input placeholder="Telpa (piem. 301)" value={fRoom} onChange={(e) => setFRoom(e.target.value)} style={{ flex: 1 }} />
+              <button className="btnPrimary" onClick={addEntry} disabled={!fSubjectId}>Pievienot</button>
+            </div>
+          </div>
+        </>
+      )}
     </Layout>
   );
 }

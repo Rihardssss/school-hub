@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext';
 
 export default function Announcements() {
   const { user } = useAuth();
+  const canManage = user?.role === 'teacher' || user?.role === 'admin';
+
   const [items,    setItems]    = useState([]);
   const [title,    setTitle]    = useState('');
   const [content,  setContent]  = useState('');
@@ -36,27 +38,30 @@ export default function Announcements() {
 
   return (
     <Layout title="Paziņojumi">
-      <div className="panel stack">
-        <input
-          placeholder="Virsraksts"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <textarea
-          className="textArea"
-          placeholder="Saturs..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-        <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', userSelect: 'none' }}>
-            <input type="checkbox" checked={isPinned} onChange={(e) => setIsPinned(e.target.checked)} />
-            Piespraust paziņojumu
-          </label>
-          {error && <span style={{ color: '#b91c1c', fontSize: '0.9rem' }}>{error}</span>}
-          <button className="btnPrimary" style={{ marginLeft: 'auto' }} onClick={add}>Publicēt</button>
+      {/* Compose form — teachers and admins only */}
+      {canManage && (
+        <div className="panel stack">
+          <input
+            placeholder="Virsraksts"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <textarea
+            className="textArea"
+            placeholder="Saturs..."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', userSelect: 'none' }}>
+              <input type="checkbox" checked={isPinned} onChange={(e) => setIsPinned(e.target.checked)} />
+              Piespraust paziņojumu
+            </label>
+            {error && <span style={{ color: '#b91c1c', fontSize: '0.9rem' }}>{error}</span>}
+            <button className="btnPrimary" style={{ marginLeft: 'auto' }} onClick={add}>Publicēt</button>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="panel stack" style={{ marginTop: 8 }}>
         {items.length === 0 && <div className="muted">Nav neviena paziņojuma.</div>}
@@ -67,7 +72,8 @@ export default function Announcements() {
                 {a.is_pinned && <span style={{ color: '#f59e0b', fontWeight: 700 }}>📌</span>}
                 <strong>{a.title}</strong>
               </div>
-              {a.author_id === user?.id && (
+              {/* Admin sees delete on all; teacher only on own */}
+              {canManage && (user?.role === 'admin' || a.author_id === user?.id) && (
                 <button className="btnDanger btnSmall" onClick={() => remove(a.id)}>Dzēst</button>
               )}
             </div>

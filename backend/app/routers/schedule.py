@@ -6,7 +6,7 @@ from app.database import get_db
 from app.models.schedule import ScheduleEntry
 from app.models.subject import Subject
 from app.schemas.schedule import ScheduleCreate, ScheduleUpdate, ScheduleResponse
-from app.utils.auth import get_current_user
+from app.utils.auth import get_current_user, require_roles
 from app.models.user import User
 
 router = APIRouter(prefix="/api/schedule", tags=["schedule"])
@@ -28,7 +28,7 @@ def list_schedule(
 def create_entry(
     payload: ScheduleCreate,
     db: Session = Depends(get_db),
-    _: User = Depends(get_current_user),
+    _: User = Depends(require_roles(["teacher", "admin"])),
 ):
     if not db.get(Subject, payload.subject_id):
         raise HTTPException(status_code=404, detail="Subject not found")
@@ -45,7 +45,7 @@ def update_entry(
     entry_id: UUID,
     payload: ScheduleUpdate,
     db: Session = Depends(get_db),
-    _: User = Depends(get_current_user),
+    _: User = Depends(require_roles(["teacher", "admin"])),
 ):
     entry = db.get(ScheduleEntry, entry_id)
     if not entry:
@@ -66,7 +66,7 @@ def update_entry(
 def delete_entry(
     entry_id: UUID,
     db: Session = Depends(get_db),
-    _: User = Depends(get_current_user),
+    _: User = Depends(require_roles(["teacher", "admin"])),
 ):
     entry = db.get(ScheduleEntry, entry_id)
     if not entry:

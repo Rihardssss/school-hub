@@ -6,7 +6,7 @@ from app.database import get_db
 from app.models.subject import Subject
 from app.models.activity_log import ActivityLog
 from app.schemas.subject import SubjectCreate, SubjectUpdate, SubjectResponse
-from app.utils.auth import get_current_user
+from app.utils.auth import get_current_user, require_roles
 from app.models.user import User
 
 router = APIRouter(prefix="/api/subjects", tags=["subjects"])
@@ -24,7 +24,7 @@ def list_subjects(
 def create_subject(
     payload: SubjectCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_roles(["teacher", "admin"])),
 ):
     subject = Subject(**payload.model_dump())
     db.add(subject)
@@ -44,7 +44,7 @@ def update_subject(
     subject_id: UUID,
     payload: SubjectUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_roles(["teacher", "admin"])),
 ):
     subject = db.get(Subject, subject_id)
     if not subject:
@@ -67,7 +67,7 @@ def update_subject(
 def delete_subject(
     subject_id: UUID,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_roles(["teacher", "admin"])),
 ):
     subject = db.get(Subject, subject_id)
     if not subject:
