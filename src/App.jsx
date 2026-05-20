@@ -1,54 +1,30 @@
-import { useState } from "react";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import Homework from "./pages/Homework";
-import Schedule from "./pages/Schedule";
-import Announcements from "./pages/Announcements";
-import Messages from "./pages/Messages";
-import Progress from "./pages/Progress";
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import Login        from './pages/Login';
+import Register     from './pages/Register';
+import Dashboard    from './pages/Dashboard';
+import Homework     from './pages/Homework';
+import Schedule     from './pages/Schedule';
+import Announcements from './pages/Announcements';
+import Messages     from './pages/Messages';
+import Profile      from './pages/Profile';
 
 function App() {
-  const [page, setPage] = useState("login");
-
-  if (page === "login") {
-    return <Login setPage={setPage} />;
-  }
-
-  if (page === "register") {
-    return <Register setPage={setPage} />;
-  }
-
-  if (page === "dashboard") {
-    return <Dashboard setPage={setPage} />;
-  }
-
-  if (page === "homework") {
-    return <Homework setPage={setPage} />;
-  }
-
-  if (page === "schedule") {
-    return <Schedule setPage={setPage} />;
-  }
-
-  if (page === "announcements") {
-    return <Announcements setPage={setPage} />;
-  }
-
-  if (page === "messages") {
-    return <Messages setPage={setPage} />;
-  }
-
-  if (page === "progress") {
-    return <Progress setPage={setPage} />;
-  }
-
   return (
-    <div className="center">
-      <div className="card">
-        Lapa nav atrasta
-      </div>
-    </div>
+    <AuthProvider>
+      <Routes>
+        <Route path="/login"    element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard"     element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/homework"      element={<ProtectedRoute><Homework /></ProtectedRoute>} />
+        <Route path="/schedule"      element={<ProtectedRoute><Schedule /></ProtectedRoute>} />
+        <Route path="/announcements" element={<ProtectedRoute><Announcements /></ProtectedRoute>} />
+        <Route path="/messages"      element={<ProtectedRoute><Messages /></ProtectedRoute>} />
+        <Route path="/profile"       element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </AuthProvider>
   );
 }
 

@@ -1,117 +1,148 @@
-import { useEffect, useState } from "react";
-import { createMessage, deleteMessage, getMessages, toggleMessageRead } from "../services/api";
+import { useEffect, useState } from 'react';
+import api from '../services/api';
+import Layout from '../components/Layout';
+import { useAuth } from '../context/AuthContext';
 
-function Messages({ setPage }) {
+export default function Messages() {
+  const { user } = useAuth();
+  const [tab,      setTab]      = useState('inbox'); // 'inbox' | 'sent'
   const [messages, setMessages] = useState([]);
+  const [users,    setUsers]    = useState([]);
   const [activeId, setActiveId] = useState(null);
-  const [to, setTo] = useState("Stepanova Jeļena");
-  const [subject, setSubject] = useState("");
-  const [body, setBody] = useState("");
-  const teachers = [
-    "Stepanova Jeļena",
-    "Medvedevs Vladislavs",
-    "Liepiņa-Zakirova Inese",
-    "Ozola Inese",
-    "Devajeva Ludmila",
-    "Kļaveniece-Zaharova Elizabete",
-  ];
 
+  // Compose form
+  const [recipientId, setRecipientId] = useState('');
+  const [subject,     setSubject]     = useState('');
+  const [body,        setBody]        = useState('');
+  const [error,       setError]       = useState('');
+
+  // Fetch other users once
   useEffect(() => {
-    async function load() {
-      const data = await getMessages();
-      setMessages(data);
-      if (data[0]) setActiveId(data[0].id);
+    api.get('/users').then((r) => {
+      const others = r.data.filter((u) => u.id !== user?.id);
+      setUsers(others);
+      if (others.length > 0) setRecipientId(others[0].id);
+    });
+  }, [user]);
+
+  // Reload messages when tab changes
+  useEffect(() => { loadMessages(); }, [tab]);
+
+  async function loadMessages() {
+    const { data } = await api.get(tab === 'inbox' ? '/messages/inbox' : '/messages/sent');
+    setMessages(data);
+    setActiveId(data[0]?.id || null);
+  }
+
+  const active = messages.find((m) => m.id === activeId) || null;
+  const unread = messages.filter((m) => !m.is_read).length;
+
+  const openMessage = async (id) => {
+    setActiveId(id);
+    const msg = messages.find((m) => m.id === id);
+    if (tab === 'inbox' && msg && !msg.is_read) {
+      await api.patch(`/messages/${id}/read`);
+      setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, is_read: true } : m)));
     }
-    load();
-  }, []);
-
-  const activeMessage = messages.find((m) => m.id === activeId) || null;
-  const unreadCount = messages.filter((m) => !m.read).length;
-
-  const addMessage = async () => {
-    if (!subject.trim() || !body.trim()) return;
-    const created = await createMessage({ to, subject, body });
-    setMessages((prev) => [created, ...prev]);
-    setActiveId(created.id);
-    setSubject("");
-    setBody("");
   };
 
-  const toggleRead = async (id) => {
-    setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, read: !m.read } : m)));
-    await toggleMessageRead(id);
+  const send = async () => {
+    setError('');
+    if (!subject.trim() || !body.trim() || !recipientId) { setError('Aizpildi visus laukus.'); return; }
+    try {
+      const { data } = await api.post('/messages', {
+        recipient_id: recipientId,
+        subject: subject.trim(),
+        body: body.trim(),
+      });
+      setSubject('');
+      setBody('');
+      if (tab === 'sent') setMessages((prev) => [data, ...prev]);
+      else setError('');
+      alert('Vēstule nosūtīta!');
+    } catch (e) {
+      setError(e.response?.data?.detail || 'Neizdevās nosūtīt.');
+    }
   };
 
-  const removeMessage = async (id) => {
+  const remove = async (id) => {
+    await api.delete(`/messages/${id}`);
     setMessages((prev) => {
       const next = prev.filter((m) => m.id !== id);
-      if (activeId === id) {
-        setActiveId(next[0]?.id ?? null);
-      }
+      if (activeId === id) setActiveId(next[0]?.id || null);
       return next;
     });
-    await deleteMessage(id);
+  };
+
+  const displayName = (userId) => {
+    if (userId === user?.id) return 'Tu';
+    const u = users.find((u) => u.id === userId);
+    return u ? `${u.full_name} (@${u.username})` : userId?.slice(0, 8);
   };
 
   return (
-    <div className="layout">
-      <div className="topbar">
-        <div className="titleBlock">
-          <h1>Vēstules</h1>
-          <p className="muted">Neizlasītas: {unreadCount}</p>
-        </div>
-        <button className="btnGhost" onClick={() => setPage("dashboard")}>Atpakaļ</button>
+    <Layout title="Vēstules">
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+        <button className={tab === 'inbox' ? 'btnPrimary' : 'btnGhost'} onClick={() => setTab('inbox')}>
+          Ienākošās{tab === 'inbox' && unread > 0 ? ` (${unread})` : ''}
+        </button>
+        <button className={tab === 'sent' ? 'btnPrimary' : 'btnGhost'} onClick={() => setTab('sent')}>
+          Nosūtītās
+        </button>
       </div>
 
+      {/* Mail split view */}
       <div className="mailLayout">
-        <div className="panel stack">
-          <h2>Ienākošās</h2>
+        <div className="panel stack" style={{ overflowY: 'auto', maxHeight: 420 }}>
           {messages.length === 0 && <div className="muted">Nav vēstuļu.</div>}
           {messages.map((m) => (
             <button
               key={m.id}
-              className={m.id === activeId ? "mailItem activeMail" : "mailItem"}
-              onClick={() => setActiveId(m.id)}
+              className={`mailItem${m.id === activeId ? ' activeMail' : ''}`}
+              onClick={() => openMessage(m.id)}
             >
               <div className="mailTop">
-                <strong>{m.from}</strong>
-                {!m.read && <span className="unreadDot" />}
+                <strong style={{ fontSize: '0.9rem' }}>
+                  {tab === 'inbox' ? displayName(m.sender_id) : displayName(m.recipient_id)}
+                </strong>
+                {tab === 'inbox' && !m.is_read && <span className="unreadDot" />}
               </div>
-              <div>{m.subject}</div>
+              <div style={{ fontSize: '0.85rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: '#6b7280' }}>
+                {m.subject}
+              </div>
             </button>
           ))}
         </div>
 
         <div className="panel stack">
-          <h2>Saturs</h2>
-          {!activeMessage && <div className="muted">Izvēlies vēstuli.</div>}
-          {activeMessage && (
+          {!active && <div className="muted">Izvēlies vēstuli.</div>}
+          {active && (
             <>
-              <div><strong>No:</strong> {activeMessage.from}</div>
-              <div><strong>Kam:</strong> {activeMessage.to || "Tu"}</div>
-              <div><strong>Tēma:</strong> {activeMessage.subject}</div>
-              <div className="mailBody">{activeMessage.body}</div>
+              <div><strong>Tēma:</strong> {active.subject}</div>
+              <div><strong>No:</strong> {displayName(active.sender_id)}</div>
+              <div><strong>Kam:</strong> {displayName(active.recipient_id)}</div>
+              <div className="muted" style={{ fontSize: '0.8rem' }}>
+                {new Date(active.created_at).toLocaleString('lv-LV')}
+              </div>
+              <div className="mailBody">{active.body}</div>
               <div className="actionsRow">
-                <button className="btnGhost" onClick={() => toggleRead(activeMessage.id)}>
-                  {activeMessage.read ? "Atzīmēt kā neizlasītu" : "Atzīmēt kā izlasītu"}
-                </button>
-                <button className="btnDanger" onClick={() => removeMessage(activeMessage.id)}>
-                  Dzēst vēstuli
-                </button>
+                <button className="btnDanger btnSmall" onClick={() => remove(active.id)}>Dzēst vēstuli</button>
               </div>
             </>
           )}
         </div>
       </div>
 
-      <div className="panel stack">
+      {/* Compose */}
+      <div className="panel stack" style={{ marginTop: 12 }}>
         <h2>Jauna vēstule</h2>
-        <select value={to} onChange={(e) => setTo(e.target.value)}>
-          {teachers.map((teacher) => (
-            <option key={teacher} value={teacher}>
-              {teacher}
-            </option>
-          ))}
+        {error && <div className="errorText">{error}</div>}
+        <select value={recipientId} onChange={(e) => setRecipientId(e.target.value)}>
+          {users.length === 0
+            ? <option value="">Nav citu lietotāju</option>
+            : users.map((u) => <option key={u.id} value={u.id}>{u.full_name} (@{u.username})</option>)
+          }
         </select>
         <input
           placeholder="Temats"
@@ -120,14 +151,14 @@ function Messages({ setPage }) {
         />
         <textarea
           className="textArea"
-          placeholder="Vēstules teksts"
+          placeholder="Vēstules teksts..."
           value={body}
           onChange={(e) => setBody(e.target.value)}
         />
-        <button className="btnPrimary" onClick={addMessage}>Nosūtīt</button>
+        <button className="btnPrimary" style={{ alignSelf: 'flex-start' }} onClick={send}>
+          Nosūtīt
+        </button>
       </div>
-    </div>
+    </Layout>
   );
 }
-
-export default Messages;

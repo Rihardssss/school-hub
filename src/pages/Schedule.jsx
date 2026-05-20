@@ -1,178 +1,114 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from 'react';
+import api from '../services/api';
+import Layout from '../components/Layout';
 
-const times = [
-  "08:30 - 09:10",
-  "09:10 - 09:50",
-  "10:00 - 10:40",
-  "10:40 - 11:20",
-  "12:00 - 12:40",
-  "12:40 - 13:20",
-  "13:40 - 14:20",
-  "14:20 - 15:00",
-  "15:10 - 15:50",
-  "15:50 - 16:30",
-  "16:35 - 17:15",
-  "17:15 - 17:55",
-  "18:00 - 18:40",
-  "18:40 - 19:20",
-  "19:40 - 20:20",
-  "20:20 - 21:00",
-];
+const DAYS = ['', 'Pirmdiena', 'Otrdiena', 'Trešdiena', 'Ceturtdiena', 'Piektdiena'];
 
-const scheduleByDay = {
-  Pirmdiena: {
-    3: {
-      subject: "Svešvaloda I (Angļu) - 114. auditorija, Meža iela 3 (RISEBA) (Stepanova Jeļena)",
-      tasks: "NOD",
-      topic: "Conditionals, 1st, 2nd, 3rd",
-    },
-    4: {
-      subject: "Svešvaloda I (Angļu) - 114. auditorija, Meža iela 3 (RISEBA) (Stepanova Jeļena)",
-      topic: "Mixed Conditionals",
-    },
-    5: {
-      subject: "Latviešu valoda I un Literatūra I - 43.auditorija, VICTORIA (D-8) (Liepiņa-Zakirova Inese)",
-      tasks: "NOD",
-      topic: "Teikuma iedalījums pēc izteikuma mērķa.",
-    },
-    6: {
-      subject: "Latviešu valoda I un Literatūra I - 43.auditorija, VICTORIA (D-8) (Liepiņa-Zakirova Inese)",
-      tasks: "NOD",
-      topic: "Teikuma veidi pēc uzbūves.",
-    },
-    7: {
-      subject: "Svešvaloda (B1) - Spāņu - 102. auditorija, Meža iela 3 (RISEBA) (Kļaveniece-Zaharova Elizabete)",
-      grade: "8",
-      topic: "Pārbaudes darbs II",
-    },
-    8: {
-      subject: "Svešvaloda (B1) - Spāņu - 102. auditorija, Meža iela 3 (RISEBA) (Kļaveniece-Zaharova Elizabete)",
-      topic: "Pārbaudes darbs II",
-    },
-    9: { subject: "Matemātika I - 13.auditorija, VICTORIA (D-8) (Devajeva Ludmila)" },
-    10: { subject: "Matemātika I - 13.auditorija, VICTORIA (D-8) (Devajeva Ludmila)" },
-  },
-  Otrdiena: {
-    3: {
-      subject: "Dabaszinības - 35.auditorija, VICTORIA (D-8) (Ozola Inese)",
-      topic: "Projekts: Vides izpēte un iespējamā piesārņojuma noteikšana, jaunie darba organizācijas veidi, dienas režīms",
-    },
-    4: {
-      subject: "Dabaszinības - 35.auditorija, VICTORIA (D-8) (Ozola Inese)",
-      topic: "Projekts: Vides izpēte un iespējamā piesārņojuma noteikšana, jaunie darba organizācijas veidi, dienas režīms",
-    },
-    5: {
-      subject: "Matemātika I - 13.auditorija, VICTORIA (D-8) (Devajeva Ludmila)",
-      topic: "Eksponentfunkcija. Eksponenciālie procesi SR: iepazīstas ar reālās situācijās sastopamiem eksponenciāliem procesiem",
-    },
-    6: {
-      subject: "Latviešu valoda I un Literatūra I - 43.auditorija, VICTORIA (D-8) (Liepiņa-Zakirova Inese)",
-      tasks: "* NOD",
-      topic: "Literatūras veidi un žanri.",
-    },
-  },
-  Tresdiena: {
-    3: { subject: "Programmēšanas tehnoloģijas (PB5) - attālināti (Medvedevs Vladislavs)" },
-    4: { subject: "Programmēšanas tehnoloģijas (PB5) - attālināti (Medvedevs Vladislavs)" },
-    5: { subject: "Programmēšanas tehnoloģijas (PB5) - attālināti (Medvedevs Vladislavs)" },
-    6: { subject: "Programmēšanas tehnoloģijas (PB5) - attālināti (Medvedevs Vladislavs)" },
-  },
-  Ceturtdiena: {
-    2: {
-      subject: "Datu bāzu programmēšana (PB3) - 204. auditorija, Meža iela 3 (RISEBA) (Medvedevs Vladislavs)",
-    },
-    3: {
-      subject: "Datu bāzu programmēšana (PB3) - 204. auditorija, Meža iela 3 (RISEBA) (Medvedevs Vladislavs)",
-    },
-    4: {
-      subject: "Datu bāzu programmēšana (PB3) - 204. auditorija, Meža iela 3 (RISEBA) (Medvedevs Vladislavs)",
-    },
-    5: {
-      subject: "Datu bāzu programmēšana (PB3) - 204. auditorija, Meža iela 3 (RISEBA) (Medvedevs Vladislavs)",
-    },
-    6: {
-      subject: "Datu bāzu programmēšana (PB3) - 204. auditorija, Meža iela 3 (RISEBA) (Medvedevs Vladislavs)",
-    },
-    7: {
-      subject: "Datu bāzu programmēšana (PB3) - 204. auditorija, Meža iela 3 (RISEBA) (Medvedevs Vladislavs)",
-    },
-    8: {
-      subject: "Programmēšanas tehnoloģijas (PB5) - 204. auditorija, Meža iela 3 (RISEBA) (Medvedevs Vladislavs)",
-    },
-    9: {
-      subject: "Programmēšanas tehnoloģijas (PB5) - 204. auditorija, Meža iela 3 (RISEBA) (Medvedevs Vladislavs)",
-    },
-  },
-  Piektdiena: {},
-};
+export default function Schedule() {
+  const [entries,     setEntries]     = useState([]);
+  const [subjects,    setSubjects]    = useState([]);
+  const [selectedDay, setSelectedDay] = useState(1);
 
-function Schedule({ setPage }) {
-  const [selectedDay, setSelectedDay] = useState("Pirmdiena");
-  const days = Object.keys(scheduleByDay);
-  const rows = useMemo(
-    () =>
-      times.map((time, idx) => {
-        const nr = idx + 1;
-        const lesson = scheduleByDay[selectedDay][nr] || {};
-        return { nr, time, ...lesson };
-      }),
-    [selectedDay]
-  );
+  // Form state
+  const [fSubjectId, setFSubjectId] = useState('');
+  const [fDay,       setFDay]       = useState(1);
+  const [fStart,     setFStart]     = useState('09:00');
+  const [fEnd,       setFEnd]       = useState('10:00');
+  const [fRoom,      setFRoom]      = useState('');
+
+  useEffect(() => { reload(); }, []);
+
+  useEffect(() => {
+    if (subjects.length > 0 && !fSubjectId) setFSubjectId(subjects[0].id);
+  }, [subjects, fSubjectId]);
+
+  async function reload() {
+    const [s, e] = await Promise.all([api.get('/subjects'), api.get('/schedule')]);
+    setSubjects(s.data);
+    setEntries(e.data);
+  }
+
+  const addEntry = async () => {
+    if (!fSubjectId) return;
+    await api.post('/schedule', {
+      subject_id: fSubjectId,
+      day_of_week: fDay,
+      start_time: fStart,
+      end_time: fEnd,
+      room: fRoom || null,
+    });
+    setFRoom('');
+    reload();
+  };
+
+  const deleteEntry = async (id) => {
+    await api.delete(`/schedule/${id}`);
+    setEntries((prev) => prev.filter((e) => e.id !== id));
+  };
+
+  const subjectName = (id) => subjects.find((s) => s.id === id)?.name || '?';
+  const subjectColor = (id) => subjects.find((s) => s.id === id)?.color || '#6366f1';
+
+  const dayEntries = entries
+    .filter((e) => e.day_of_week === selectedDay)
+    .sort((a, b) => a.start_time.localeCompare(b.start_time));
 
   return (
-    <div className="layout">
-      <div className="topbar">
-        <div className="titleBlock">
-          <h1>Stundu saraksts</h1>
-        </div>
-        <button className="btnGhost" onClick={() => setPage("dashboard")}>Atpakaļ</button>
+    <Layout title="Stundu saraksts">
+
+      {/* Day tabs */}
+      <div className="dayTabs">
+        {[1, 2, 3, 4, 5].map((d) => (
+          <button
+            key={d}
+            className={d === selectedDay ? 'btnPrimary' : 'btnGhost'}
+            onClick={() => setSelectedDay(d)}
+          >
+            {DAYS[d]}
+          </button>
+        ))}
       </div>
 
-      <div className="panel">
-        <div className="dayTabs">
-          {days.map((day) => (
-            <button
-              key={day}
-              className={day === selectedDay ? "btnPrimary" : "btnGhost"}
-              onClick={() => setSelectedDay(day)}
-            >
-              {day}
-            </button>
-          ))}
+      {/* Entries for selected day */}
+      <div className="panel stack">
+        {dayEntries.length === 0 && (
+          <div className="muted">Nav stundu {DAYS[selectedDay].toLowerCase()} dienā.</div>
+        )}
+        {dayEntries.map((e) => (
+          <div key={e.id} className="listItem">
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style={{ fontWeight: 700, minWidth: 100, color: '#1e3a8a' }}>
+                {e.start_time.slice(0, 5)} – {e.end_time.slice(0, 5)}
+              </span>
+              <span style={{ fontWeight: 600, color: subjectColor(e.subject_id) }}>
+                {subjectName(e.subject_id)}
+              </span>
+              {e.room && <span className="muted">· {e.room}</span>}
+            </div>
+            <button className="btnDanger btnSmall" onClick={() => deleteEntry(e.id)}>Dzēst</button>
+          </div>
+        ))}
+      </div>
+
+      {/* Add form */}
+      <h2 style={{ marginTop: 20 }}>Pievienot stundu</h2>
+      <div className="panel stack">
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <select value={fSubjectId} onChange={(e) => setFSubjectId(e.target.value)} style={{ flex: 1 }}>
+            {subjects.length === 0 && <option value="">— pievienojiet priekšmetus vispirms —</option>}
+            {subjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+          </select>
+          <select value={fDay} onChange={(e) => setFDay(Number(e.target.value))} style={{ width: 140 }}>
+            {[1, 2, 3, 4, 5].map((d) => <option key={d} value={d}>{DAYS[d]}</option>)}
+          </select>
         </div>
-        <div className="tableWrap">
-          <table className="scheduleTable">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Laiks</th>
-                <th>Priekšmets, klases telpa, pedagogs</th>
-                <th>Vērtējumi</th>
-                <th>Apmeklējumi</th>
-                <th>Uzdevumi</th>
-                <th>Tēma</th>
-                <th>Atsauksme</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr key={row.nr}>
-                  <td>{row.nr}.</td>
-                  <td>{row.time}</td>
-                  <td>{row.subject || ""}</td>
-                  <td>{row.grade || ""}</td>
-                  <td>{row.attendance || ""}</td>
-                  <td>{row.tasks || ""}</td>
-                  <td>{row.topic || ""}</td>
-                  <td>{row.feedback || ""}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <input type="time" value={fStart} onChange={(e) => setFStart(e.target.value)} style={{ width: 120 }} />
+          <input type="time" value={fEnd}   onChange={(e) => setFEnd(e.target.value)}   style={{ width: 120 }} />
+          <input placeholder="Telpa (piem. 301)" value={fRoom} onChange={(e) => setFRoom(e.target.value)} style={{ flex: 1 }} />
+          <button className="btnPrimary" onClick={addEntry} disabled={!fSubjectId}>Pievienot</button>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
-
-export default Schedule;

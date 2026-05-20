@@ -1,103 +1,26 @@
-const API = "/api";
+import axios from 'axios';
 
-export async function registerUser(email, password) {
-  const res = await fetch(`${API}/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ email, password })
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Register failed");
-  return data;
-}
+const api = axios.create({ baseURL: '/api' });
 
-export async function loginUser(email, password) {
-  const res = await fetch(`${API}/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ email, password })
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Invalid credentials");
-  localStorage.setItem("token", data.token);
-  localStorage.setItem("me", JSON.stringify(data.user));
-  return data;
-}
+// Attach JWT to every request
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
-export async function getCurrentUser() {
-  const res = await fetch(`${API}/me`);
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Not logged in");
-  return data;
-}
+// On 401, clear credentials and force re-login (skip for the login endpoint itself)
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    const url = err.config?.url || '';
+    if (err.response?.status === 401 && !url.includes('/auth/login')) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    }
+    return Promise.reject(err);
+  },
+);
 
-export async function getAnnouncements() {
-  const res = await fetch(`${API}/announcements`);
-  return res.json();
-}
-
-export async function createAnnouncement(item) {
-  const res = await fetch(`${API}/announcements`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(item)
-  });
-  return res.json();
-}
-
-export async function getHomework() {
-  const res = await fetch(`${API}/homework`);
-  return res.json();
-}
-
-export async function createHomework(item) {
-  const res = await fetch(`${API}/homework`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(item)
-  });
-  return res.json();
-}
-
-export async function getLessons() {
-  const res = await fetch(`${API}/lessons`);
-  return res.json();
-}
-
-export async function getMessages() {
-  const res = await fetch(`${API}/messages`);
-  return res.json();
-}
-
-export async function createMessage(item) {
-  const res = await fetch(`${API}/messages`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(item)
-  });
-  return res.json();
-}
-
-export async function deleteMessage(id) {
-  const res = await fetch(`${API}/messages/${id}`, {
-    method: "DELETE"
-  });
-  return res.json();
-}
-
-export async function toggleMessageRead(id) {
-  const res = await fetch(`${API}/messages/${id}/toggle-read`, {
-    method: "PATCH"
-  });
-  return res.json();
-}
+export default api;

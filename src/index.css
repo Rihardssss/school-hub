@@ -285,6 +285,112 @@ textarea:focus {
   background: #f8fafc;
 }
 
+/* ── Shell & Sidebar ─────────────────────────────────────── */
+.appShell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  background: #0f172a;
+  color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 12px;
+  gap: 4px;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
+.sidebarLogo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 4px 10px 16px;
+  letter-spacing: 0.01em;
+}
+
+.navLink {
+  display: block;
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.93rem;
+  font-weight: 500;
+  transition: background 0.12s, color 0.12s;
+}
+
+.navLink:hover {
+  background: #1e293b;
+  color: #f1f5f9;
+}
+
+.navLink.active {
+  background: #1e40af;
+  color: #ffffff;
+}
+
+.sidebarFooter {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #1e293b;
+}
+
+.sidebarUser {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mainContent {
+  flex: 1;
+  min-width: 0;
+  padding: 28px 24px 40px;
+}
+
+.pageTitle {
+  margin: 0 0 20px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* ── Utility ─────────────────────────────────────────────── */
+.btnSmall {
+  padding: 5px 10px;
+  font-size: 0.82rem;
+}
+
+.textArea {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  padding: 11px 12px;
+  font-size: 0.97rem;
+  outline: none;
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.textArea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.12);
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 860px) {
   .grid3,
   .quickActions {
@@ -293,5 +399,41 @@ textarea:focus {
 
   .mailLayout {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .appShell {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    gap: 2px;
+  }
+
+  .sidebarLogo {
+    width: 100%;
+    padding: 2px 4px 6px;
+  }
+
+  .sidebarFooter {
+    margin-top: 0;
+    margin-left: auto;
+    flex-direction: row;
+    align-items: center;
+    border-top: none;
+    padding-top: 0;
+    padding-left: 8px;
+    border-left: 1px solid #1e293b;
+  }
+
+  .mainContent {
+    padding: 16px 14px 30px;
   }
 }

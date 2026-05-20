@@ -1,24 +1,34 @@
-import { useState } from "react";
-import { loginUser } from "../services/api";
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import api from '../services/api';
 
-function Login({ setPage }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+export default function Login() {
+  const { login } = useAuth();
+  const navigate  = useNavigate();
+  const [email,    setEmail]    = useState('');
+  const [password, setPassword] = useState('');
+  const [error,    setError]    = useState('');
+  const [loading,  setLoading]  = useState(false);
 
-  const handleLogin = async () => {
+  const handle = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
     try {
-      setError("");
-      await loginUser(email, password);
-      setPage("dashboard");
-    } catch {
-      setError("Nepareizs e-pasts vai parole");
+      const { data } = await api.post('/auth/login', { email, password });
+      await login(data.access_token);
+      navigate('/dashboard');
+    } catch (err) {
+      setError('Nepareizs e-pasts vai parole');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="center">
-      <div className="card">
+      <form className="card" onSubmit={handle}>
         <h1>Ielogošanās</h1>
 
         <input
@@ -26,23 +36,26 @@ function Login({ setPage }) {
           placeholder="E-pasts"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
+          autoFocus
         />
-
         <input
           type="password"
           placeholder="Parole"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
 
-        <button className="btnPrimary" onClick={handleLogin}>Ielogoties</button>
-
-        <button className="btnGhost" onClick={() => setPage("register")}>Reģistrēties</button>
-
         {error && <div className="errorText">{error}</div>}
-      </div>
+
+        <button className="btnPrimary" type="submit" disabled={loading}>
+          {loading ? 'Lūdzu uzgaidi...' : 'Ielogoties'}
+        </button>
+        <Link to="/register" className="btnGhost" style={{ textAlign: 'center', textDecoration: 'none' }}>
+          Reģistrēties
+        </Link>
+      </form>
     </div>
   );
 }
-
-export default Login;
