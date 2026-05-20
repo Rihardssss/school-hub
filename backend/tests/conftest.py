@@ -6,7 +6,7 @@ Set DATABASE_URL in your environment to point at the database, e.g.:
 import os
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from app.main import app
 from app.database import Base, get_db
@@ -71,8 +71,15 @@ USER_B = {
 }
 
 
-def register_and_login(client, user: dict) -> str:
+def register_and_login(client, user: dict, role: str = "teacher") -> str:
     client.post("/api/auth/register", json=user)
+    # Elevate role so teacher/admin-only endpoints work in tests
+    with engine.connect() as conn:
+        conn.execute(
+            text("UPDATE users SET role = :role WHERE email = :email"),
+            {"role": role, "email": user["email"]},
+        )
+        conn.commit()
     r = client.post("/api/auth/login", json={
         "email": user["email"],
         "password": user["password"],
