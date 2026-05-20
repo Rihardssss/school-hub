@@ -69,6 +69,6 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             cd ~/schoolhub
-            git pull origin main
+            git pull https://${{ secrets.GH_TOKEN }}@github.com/Rihardssss/school-hub.git main
             docker compose up -d --build
             docker compose ps
