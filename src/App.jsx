@@ -9,6 +9,7 @@ import Schedule     from './pages/Schedule';
 import Announcements from './pages/Announcements';
 import Messages     from './pages/Messages';
 import Profile      from './pages/Profile';
+import Users        from './pages/Users';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/announcements" element={<ProtectedRoute><Announcements /></ProtectedRoute>} />
         <Route path="/messages"      element={<ProtectedRoute><Messages /></ProtectedRoute>} />
         <Route path="/profile"       element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/users"         element={<ProtectedRoute><Users /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </AuthProvider>
