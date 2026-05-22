@@ -11,7 +11,7 @@ Live at **[riciboy.eu](https://riciboy.eu)**
 |---|---|
 | Frontend | React 18 + Vite, React Router |
 | Backend | FastAPI (Python 3.11) |
-| Database | PostgreSQL 15 |
+| Database | PostgreSQL 17 |
 | Auth | JWT (Bearer tokens) |
 | Reverse proxy | nginx |
 | Containerisation | Docker + Docker Compose |

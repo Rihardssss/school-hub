@@ -1,8 +1,6 @@
 services:
   db:
-    build:
-      context: .
-      dockerfile: Dockerfile.postgres
+    image: postgres:17
     container_name: schoolhub-db
     restart: unless-stopped
     env_file:

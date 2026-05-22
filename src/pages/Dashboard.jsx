@@ -5,21 +5,21 @@ import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 
 const CARDS = [
-  { key: 'homework_total',     label: 'Mājasdarbi kopā',      icon: '📚', color: '#6366f1' },
-  { key: 'homework_pending',   label: 'Nepaveiktie',           icon: '⏳', color: '#f59e0b' },
-  { key: 'homework_done',      label: 'Paveiktie',             icon: '✅', color: '#10b981' },
-  { key: 'homework_due_today', label: 'Termiņš šodien',        icon: '🔥', color: '#ef4444' },
-  { key: 'unread_messages',    label: 'Neizlasītas vēstules',  icon: '✉️', color: '#3b82f6' },
-  { key: 'todays_lessons',     label: 'Stundas šodien',        icon: '🏫', color: '#8b5cf6' },
-  { key: 'subjects_total',     label: 'Priekšmeti',            icon: '🎓', color: '#0ea5e9' },
+  { key: 'homework_total',     label: 'Mājasdarbi kopā',      icon: 'Σ', color: '#2457d6' },
+  { key: 'homework_pending',   label: 'Nepaveiktie',          icon: '!', color: '#c77700' },
+  { key: 'homework_done',      label: 'Paveiktie',            icon: '✓', color: '#168650' },
+  { key: 'homework_due_today', label: 'Termiņš šodien',       icon: 'D', color: '#d4475f' },
+  { key: 'unread_messages',    label: 'Neizlasītas vēstules', icon: '@', color: '#0f9f8f' },
+  { key: 'todays_lessons',     label: 'Stundas šodien',       icon: '◷', color: '#5c35a8' },
+  { key: 'subjects_total',     label: 'Priekšmeti',           icon: '§', color: '#087a90' },
 ];
 
 const QUICK = [
-  { to: '/homework',      label: '📚 Mājasdarbi',   cls: 'btnPrimary' },
-  { to: '/schedule',      label: '📅 Saraksts',     cls: 'btnGhost'   },
-  { to: '/announcements', label: '📢 Paziņojumi',   cls: 'btnGhost'   },
-  { to: '/messages',      label: '✉️ Vēstules',     cls: 'btnGhost'   },
-  { to: '/profile',       label: '👤 Profils',       cls: 'btnGhost'   },
+  { to: '/homework',      label: 'Mājasdarbi',  icon: '✓' },
+  { to: '/schedule',      label: 'Saraksts',    icon: '◷' },
+  { to: '/announcements', label: 'Paziņojumi',  icon: '!' },
+  { to: '/messages',      label: 'Vēstules',    icon: '@' },
+  { to: '/profile',       label: 'Profils',     icon: 'ID' },
 ];
 
 const ROLE_TITLE = { student: 'Skolēna panelis', teacher: 'Skolotāja panelis', admin: 'Administratora panelis' };
@@ -27,6 +27,7 @@ const ROLE_TITLE = { student: 'Skolēna panelis', teacher: 'Skolotāja panelis',
 export default function Dashboard() {
   const { user } = useAuth();
   const [stats, setStats] = useState(null);
+  const welcomeName = user?.full_name?.split(' ')[0] || user?.username || 'tur';
 
   useEffect(() => {
     api.get('/dashboard/stats').then((r) => setStats(r.data));
@@ -35,21 +36,36 @@ export default function Dashboard() {
   return (
     <Layout title={ROLE_TITLE[user?.role] || 'Panelis'}>
       {!stats && (
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+        <div className="grid3">
           {CARDS.map(({ key }) => (
-            <div key={key} className="statCard" style={{ flex: '1 1 160px', minHeight: 80, background: '#f1f5f9' }} />
+            <div key={key} className="statCard statSkeleton" />
           ))}
         </div>
       )}
 
       {stats && (
         <>
+          <section className="dashboardHero">
+            <div>
+              <h2>Sveiks, {welcomeName}</h2>
+              <p>
+                Šeit ir šodienas mācību ritms, neatbildētās vēstules un uzdevumi,
+                kuriem vērts pievērst uzmanību vispirms.
+              </p>
+            </div>
+            <div className="heroMetric">
+              <span>Šodien plānā</span>
+              <strong>{stats.todays_lessons || 0}</strong>
+              <span>stundas</span>
+            </div>
+          </section>
+
           <div className="grid3">
             {CARDS.map(({ key, label, icon, color }) => (
-              <div key={key} className="statCard" style={{ borderLeft: `4px solid ${color}` }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="muted" style={{ fontSize: '0.85rem' }}>{label}</span>
-                  <span style={{ fontSize: '1.2rem' }}>{icon}</span>
+              <div key={key} className="statCard" style={{ borderTop: `3px solid ${color}` }}>
+                <div className="statTop">
+                  <span className="statLabel">{label}</span>
+                  <span className="statIcon" style={{ color, background: `${color}18` }}>{icon}</span>
                 </div>
                 <span className="value" style={{ color }}>{stats[key]}</span>
               </div>
@@ -57,12 +73,12 @@ export default function Dashboard() {
           </div>
 
           <div className="panel stack" style={{ marginTop: 14 }}>
-            <h2>⚡ Ātrās darbības</h2>
+            <h2>Ātrās darbības</h2>
             <div className="quickActions">
-              {QUICK.map(({ to, label, cls }) => (
-                <Link key={to} to={to} className={cls}
-                  style={{ textDecoration: 'none', textAlign: 'center' }}>
-                  {label}
+              {QUICK.map(({ to, label, icon }) => (
+                <Link key={to} to={to} className="quickLink">
+                  <span className="quickLinkIcon">{icon}</span>
+                  <span>{label}</span>
                 </Link>
               ))}
             </div>
