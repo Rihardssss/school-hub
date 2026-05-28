@@ -10,7 +10,7 @@ export function AuthProvider({ children }) {
     return raw ? JSON.parse(raw) : null;
   });
 
-  // Called after a successful POST /auth/login
+  
   const login = useCallback(async (accessToken) => {
     localStorage.setItem('token', accessToken);
     setToken(accessToken);
@@ -27,7 +27,7 @@ export function AuthProvider({ children }) {
     setUser(null);
   }, []);
 
-  // After profile update
+  
   const updateUser = useCallback((updated) => {
     localStorage.setItem('user', JSON.stringify(updated));
     setUser(updated);

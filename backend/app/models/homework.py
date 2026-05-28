@@ -3,7 +3,6 @@ from sqlalchemy import Column, String, DateTime, Date, ForeignKey, Enum as SAEnu
 from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
 
-
 class Homework(Base):
     __tablename__ = "homework"
 

@@ -26,7 +26,6 @@ app.include_router(messages.router)
 app.include_router(dashboard.router)
 app.include_router(logs.router)
 
-
 @app.get("/", tags=["health"])
 def root():
     return {"status": "ok", "app": "SchoolHub API"}

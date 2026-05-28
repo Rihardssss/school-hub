@@ -1,6 +1,5 @@
 from pydantic import BaseModel, EmailStr, field_validator
 
-
 class RegisterRequest(BaseModel):
     email: EmailStr
     username: str
@@ -24,11 +23,9 @@ class RegisterRequest(BaseModel):
             raise ValueError("Password must be at least 6 characters")
         return v
 
-
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
-
 
 class TokenResponse(BaseModel):
     access_token: str

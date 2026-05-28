@@ -9,7 +9,6 @@ from app.schemas.log import LogEntry
 
 router = APIRouter(prefix="/api/logs", tags=["logs"])
 
-
 @router.get("", response_model=List[LogEntry])
 def get_logs(
     action: Optional[str] = Query(default=None, description="Filter by action type, e.g. homework_created"),

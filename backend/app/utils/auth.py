@@ -9,7 +9,6 @@ from app.models.user import User
 
 bearer_scheme = HTTPBearer()
 
-
 def create_access_token(user_id: str) -> str:
     expire = datetime.now(timezone.utc) + timedelta(minutes=settings.jwt_expire_minutes)
     return jwt.encode(
@@ -17,7 +16,6 @@ def create_access_token(user_id: str) -> str:
         settings.jwt_secret,
         algorithm="HS256",
     )
-
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
@@ -40,7 +38,6 @@ def get_current_user(
     if user is None:
         raise invalid
     return user
-
 
 def require_roles(roles: list[str]):
     """Dependency factory — raises 403 if current user's role isn't in the list."""

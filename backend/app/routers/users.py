@@ -11,11 +11,9 @@ router = APIRouter(prefix="/api/users", tags=["users"])
 
 VALID_ROLES = {"student", "teacher", "admin"}
 
-
 @router.get("/me", response_model=UserResponse)
 def get_profile(current_user: User = Depends(get_current_user)):
     return current_user
-
 
 @router.put("/me", response_model=UserResponse)
 def update_profile(
@@ -34,14 +32,12 @@ def update_profile(
     db.refresh(current_user)
     return current_user
 
-
 @router.get("", response_model=List[UserResponse])
 def list_users(
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ):
     return db.query(User).order_by(User.full_name).all()
-
 
 @router.patch("/{user_id}/role", response_model=UserResponse)
 def change_role(
@@ -61,7 +57,6 @@ def change_role(
     db.commit()
     db.refresh(user)
     return user
-
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_user(

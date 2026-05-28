@@ -10,7 +10,6 @@ from app.utils.auth import create_access_token, get_current_user
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
-
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def register(payload: RegisterRequest, db: Session = Depends(get_db)):
     if db.query(User).filter(User.email == payload.email).first():
@@ -25,7 +24,7 @@ def register(payload: RegisterRequest, db: Session = Depends(get_db)):
         full_name=payload.full_name,
     )
     db.add(user)
-    db.flush()  # get user.id before commit
+    db.flush()
 
     db.add(ActivityLog(
         user_id=user.id,
@@ -35,7 +34,6 @@ def register(payload: RegisterRequest, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
     return user
-
 
 @router.post("/login", response_model=TokenResponse)
 def login(payload: LoginRequest, db: Session = Depends(get_db)):
@@ -51,7 +49,6 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
     db.commit()
 
     return TokenResponse(access_token=create_access_token(str(user.id)))
-
 
 @router.get("/me", response_model=UserResponse)
 def me(current_user: User = Depends(get_current_user)):

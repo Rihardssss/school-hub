@@ -2,12 +2,10 @@ from pydantic import BaseModel
 from datetime import datetime
 from uuid import UUID
 
-
 class MessageCreate(BaseModel):
     recipient_id: UUID
     subject: str
     body: str
-
 
 class MessageResponse(BaseModel):
     id: UUID

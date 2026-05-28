@@ -5,18 +5,18 @@ import { useAuth } from '../context/AuthContext';
 
 export default function Messages() {
   const { user } = useAuth();
-  const [tab,      setTab]      = useState('inbox'); // 'inbox' | 'sent'
+  const [tab,      setTab]      = useState('inbox'); 
   const [messages, setMessages] = useState([]);
   const [users,    setUsers]    = useState([]);
   const [activeId, setActiveId] = useState(null);
 
-  // Compose form
+  
   const [recipientId, setRecipientId] = useState('');
   const [subject,     setSubject]     = useState('');
   const [body,        setBody]        = useState('');
   const [error,       setError]       = useState('');
 
-  // Fetch other users once
+  
   useEffect(() => {
     api.get('/users').then((r) => {
       const others = r.data.filter((u) => u.id !== user?.id);
@@ -25,7 +25,7 @@ export default function Messages() {
     });
   }, [user]);
 
-  // Reload messages when tab changes
+  
   useEffect(() => { loadMessages(); }, [tab]);
 
   async function loadMessages() {
@@ -82,7 +82,7 @@ export default function Messages() {
 
   return (
     <Layout title="Vēstules">
-      {/* Tabs */}
+      {}
       <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
         <button className={tab === 'inbox' ? 'btnPrimary' : 'btnGhost'} onClick={() => setTab('inbox')}>
           Ienākošās{tab === 'inbox' && unread > 0 ? ` (${unread})` : ''}
@@ -92,7 +92,7 @@ export default function Messages() {
         </button>
       </div>
 
-      {/* Mail split view */}
+      {}
       <div className="mailLayout">
         <div className="panel stack" style={{ overflowY: 'auto', maxHeight: 420 }}>
           {messages.length === 0 && <div className="muted">Nav vēstuļu.</div>}
@@ -134,7 +134,7 @@ export default function Messages() {
         </div>
       </div>
 
-      {/* Compose */}
+      {}
       <div className="panel stack" style={{ marginTop: 12 }}>
         <h2>Jauna vēstule</h2>
         {error && <div className="errorText">{error}</div>}

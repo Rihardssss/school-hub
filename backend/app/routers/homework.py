@@ -12,7 +12,6 @@ from app.models.user import User
 
 router = APIRouter(prefix="/api/homework", tags=["homework"])
 
-
 @router.get("", response_model=List[HomeworkResponse])
 def list_homework(
     db: Session = Depends(get_db),
@@ -24,7 +23,6 @@ def list_homework(
         .order_by(Homework.due_date.asc().nullslast(), Homework.created_at.desc())
         .all()
     )
-
 
 @router.post("", response_model=HomeworkResponse, status_code=status.HTTP_201_CREATED)
 def create_homework(
@@ -47,7 +45,6 @@ def create_homework(
     db.refresh(hw)
     return hw
 
-
 @router.get("/{hw_id}", response_model=HomeworkResponse)
 def get_homework(
     hw_id: UUID,
@@ -62,7 +59,6 @@ def get_homework(
     if not hw:
         raise HTTPException(status_code=404, detail="Homework not found")
     return hw
-
 
 @router.put("/{hw_id}", response_model=HomeworkResponse)
 def update_homework(
@@ -91,7 +87,6 @@ def update_homework(
     db.commit()
     db.refresh(hw)
     return hw
-
 
 @router.delete("/{hw_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_homework(

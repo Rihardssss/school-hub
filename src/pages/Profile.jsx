@@ -34,7 +34,7 @@ export default function Profile() {
     <Layout title="Mans profils">
       <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
 
-        {/* Info card */}
+        {}
         <div className="card">
           {user?.avatar_url && (
             <img
@@ -70,7 +70,7 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* Edit form */}
+        {}
         <form className="card" onSubmit={save}>
           <h2>Rediģēt profilu</h2>
 

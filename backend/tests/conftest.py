@@ -19,23 +19,19 @@ DATABASE_URL = os.environ.get(
 engine = create_engine(DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-
 @pytest.fixture(scope="session", autouse=True)
 def create_tables():
     Base.metadata.create_all(bind=engine)
     yield
-    # Do NOT drop tables — the live app shares this database.
-
 
 @pytest.fixture(autouse=True)
 def clean_tables():
-    # Wipe before each test so leftover data from prior runs doesn't interfere
+
     with engine.connect() as conn:
         for table in reversed(Base.metadata.sorted_tables):
             conn.execute(table.delete())
         conn.commit()
     yield
-
 
 @pytest.fixture
 def client():
@@ -51,11 +47,6 @@ def client():
         yield c
     app.dependency_overrides.clear()
 
-
-# ------------------------------------------------------------------
-# Shared helpers
-# ------------------------------------------------------------------
-
 USER_A = {
     "email": "alice@test.com",
     "username": "alice",
@@ -70,10 +61,9 @@ USER_B = {
     "full_name": "Bob",
 }
 
-
 def register_and_login(client, user: dict, role: str = "teacher") -> str:
     client.post("/api/auth/register", json=user)
-    # Elevate role so teacher/admin-only endpoints work in tests
+
     with engine.connect() as conn:
         conn.execute(
             text("UPDATE users SET role = :role WHERE email = :email"),
@@ -86,21 +76,17 @@ def register_and_login(client, user: dict, role: str = "teacher") -> str:
     })
     return r.json()["access_token"]
 
-
 @pytest.fixture
 def token_a(client) -> str:
     return register_and_login(client, USER_A)
-
 
 @pytest.fixture
 def token_b(client) -> str:
     return register_and_login(client, USER_B)
 
-
 @pytest.fixture
 def auth_a(token_a) -> dict:
     return {"Authorization": f"Bearer {token_a}"}
-
 
 @pytest.fixture
 def auth_b(token_b) -> dict:

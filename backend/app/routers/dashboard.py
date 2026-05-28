@@ -9,7 +9,6 @@ from app.schemas.dashboard import DashboardStats
 
 router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
 
-
 @router.get("/stats", response_model=DashboardStats)
 def get_stats(
     db: Session = Depends(get_db),
@@ -19,7 +18,7 @@ def get_stats(
     All counts computed in a single raw SQL query — no ORM.
     Uses correlated subqueries so the DB resolves everything in one round-trip.
     """
-    today_dow = date.today().isoweekday()  # 1 = Monday … 7 = Sunday
+    today_dow = date.today().isoweekday()
 
     row = db.execute(
         text("""

@@ -1,8 +1,6 @@
 #!/bin/sh
 set -e
 
-# Guard against stale alembic_version stamp (e.g. if tables were dropped externally).
-# If the users table is missing, reset the stamp so upgrade re-creates everything.
 python -c "
 import sqlalchemy as sa, subprocess
 from app.config import settings

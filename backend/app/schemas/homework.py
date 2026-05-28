@@ -3,20 +3,17 @@ from datetime import date, datetime
 from uuid import UUID
 from typing import Optional, Literal
 
-
 class HomeworkCreate(BaseModel):
     subject_id: UUID
     title: str
     description: Optional[str] = None
     due_date: Optional[date] = None
 
-
 class HomeworkUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     due_date: Optional[date] = None
     status: Optional[Literal["pending", "submitted", "done"]] = None
-
 
 class HomeworkResponse(BaseModel):
     id: UUID

@@ -38,7 +38,7 @@ export default function Announcements() {
 
   return (
     <Layout title="Paziņojumi">
-      {/* Compose form — teachers and admins only */}
+      {}
       {canManage && (
         <div className="panel stack">
           <input
@@ -72,7 +72,7 @@ export default function Announcements() {
                 {a.is_pinned && <span style={{ color: '#f59e0b', fontWeight: 700 }}>📌</span>}
                 <strong>{a.title}</strong>
               </div>
-              {/* Admin sees delete on all; teacher only on own */}
+              {}
               {canManage && (user?.role === 'admin' || a.author_id === user?.id) && (
                 <button className="btnDanger btnSmall" onClick={() => remove(a.id)}>Dzēst</button>
               )}

@@ -3,7 +3,6 @@ from sqlalchemy import Column, String, DateTime, func
 from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
 
-
 class Subject(Base):
     __tablename__ = "subjects"
 

@@ -11,7 +11,6 @@ from app.models.user import User
 
 router = APIRouter(prefix="/api/schedule", tags=["schedule"])
 
-
 @router.get("", response_model=List[ScheduleResponse])
 def list_schedule(
     db: Session = Depends(get_db),
@@ -22,7 +21,6 @@ def list_schedule(
         .order_by(ScheduleEntry.day_of_week, ScheduleEntry.start_time)
         .all()
     )
-
 
 @router.post("", response_model=ScheduleResponse, status_code=status.HTTP_201_CREATED)
 def create_entry(
@@ -38,7 +36,6 @@ def create_entry(
     db.commit()
     db.refresh(entry)
     return entry
-
 
 @router.put("/{entry_id}", response_model=ScheduleResponse)
 def update_entry(
@@ -60,7 +57,6 @@ def update_entry(
     db.commit()
     db.refresh(entry)
     return entry
-
 
 @router.delete("/{entry_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_entry(

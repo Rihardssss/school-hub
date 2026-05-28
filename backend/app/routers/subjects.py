@@ -11,14 +11,12 @@ from app.models.user import User
 
 router = APIRouter(prefix="/api/subjects", tags=["subjects"])
 
-
 @router.get("", response_model=List[SubjectResponse])
 def list_subjects(
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ):
     return db.query(Subject).order_by(Subject.name).all()
-
 
 @router.post("", response_model=SubjectResponse, status_code=status.HTTP_201_CREATED)
 def create_subject(
@@ -37,7 +35,6 @@ def create_subject(
     db.commit()
     db.refresh(subject)
     return subject
-
 
 @router.put("/{subject_id}", response_model=SubjectResponse)
 def update_subject(
@@ -61,7 +58,6 @@ def update_subject(
     db.commit()
     db.refresh(subject)
     return subject
-
 
 @router.delete("/{subject_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_subject(

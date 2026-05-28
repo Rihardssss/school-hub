@@ -3,7 +3,6 @@ from datetime import time, datetime
 from uuid import UUID
 from typing import Optional
 
-
 class ScheduleCreate(BaseModel):
     subject_id: UUID
     day_of_week: int
@@ -18,14 +17,12 @@ class ScheduleCreate(BaseModel):
             raise ValueError("day_of_week must be between 1 (Mon) and 7 (Sun)")
         return v
 
-
 class ScheduleUpdate(BaseModel):
     subject_id: Optional[UUID] = None
     day_of_week: Optional[int] = None
     start_time: Optional[time] = None
     end_time: Optional[time] = None
     room: Optional[str] = None
-
 
 class ScheduleResponse(BaseModel):
     id: UUID

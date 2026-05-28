@@ -16,18 +16,18 @@ export default function Homework() {
   const [subjects, setSubjects] = useState([]);
   const [homework, setHomework] = useState([]);
 
-  // Subject form
+  
   const [subjName,  setSubjName]  = useState('');
   const [subjColor, setSubjColor] = useState('#6366f1');
 
-  // Homework form
+  
   const [hwSubjectId, setHwSubjectId] = useState('');
   const [hwTitle,     setHwTitle]     = useState('');
   const [hwDueDate,   setHwDueDate]   = useState('');
 
   useEffect(() => { reload(); }, []);
 
-  // Auto-select first subject when subjects load
+  
   useEffect(() => {
     if (subjects.length > 0 && !hwSubjectId) setHwSubjectId(subjects[0].id);
   }, [subjects, hwSubjectId]);
@@ -78,7 +78,7 @@ export default function Homework() {
   return (
     <Layout title="Mājasdarbi">
 
-      {/* ── Subjects ─────────────────────────────────────────── */}
+      {}
       <h2>Priekšmeti</h2>
       <div className="panel stack">
         {canManage && (
@@ -121,7 +121,7 @@ export default function Homework() {
         </div>
       </div>
 
-      {/* ── Add homework ──────────────────────────────────────── */}
+      {}
       <h2 style={{ marginTop: 20 }}>Pievienot uzdevumu</h2>
       <div className="panel stack">
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -154,7 +154,7 @@ export default function Homework() {
         </div>
       </div>
 
-      {/* ── Homework list ─────────────────────────────────────── */}
+      {}
       <div className="panel stack" style={{ marginTop: 8 }}>
         {homework.length === 0 && <div className="muted">Vēl nav neviena uzdevuma.</div>}
         {homework.map((h) => {

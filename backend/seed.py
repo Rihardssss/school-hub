@@ -15,7 +15,6 @@ from app.utils.security import hash_password
 
 db = SessionLocal()
 
-# ── Clear existing data ────────────────────────────────────────────────
 print("Clearing existing data...")
 db.query(Homework).delete()
 db.query(ScheduleEntry).delete()
@@ -24,7 +23,6 @@ db.query(Subject).delete()
 db.query(User).delete()
 db.commit()
 
-# ── Users ──────────────────────────────────────────────────────────────
 print("Creating users...")
 admin = User(
     id=uuid.uuid4(), email="admin@schoolhub.lv", username="admin",
@@ -53,7 +51,6 @@ for u in [admin, anna, martins] + students:
     db.add(u)
 db.commit()
 
-# ── Subjects ───────────────────────────────────────────────────────────
 print("Creating subjects...")
 subj_data = [
     ("Matemātika",     "#6366f1"),
@@ -72,30 +69,29 @@ db.commit()
 
 mat, fiz, lv, eng, ves, kim = subjects
 
-# ── Schedule ───────────────────────────────────────────────────────────
 print("Creating schedule...")
 schedule = [
-    # Monday
+
     (mat, 1, "08:00", "08:45", "201"),
     (fiz, 1, "09:00", "09:45", "Lab 1"),
     (eng, 1, "10:00", "10:45", "115"),
     (ves, 1, "11:00", "11:45", "310"),
-    # Tuesday
+
     (lv,  2, "08:00", "08:45", "202"),
     (kim, 2, "09:00", "09:45", "Lab 2"),
     (mat, 2, "10:00", "10:45", "201"),
     (eng, 2, "11:00", "11:45", "115"),
-    # Wednesday
+
     (fiz, 3, "08:00", "08:45", "Lab 1"),
     (ves, 3, "09:00", "09:45", "310"),
     (lv,  3, "10:00", "10:45", "202"),
     (kim, 3, "11:00", "11:45", "Lab 2"),
-    # Thursday
+
     (mat, 4, "08:00", "08:45", "201"),
     (eng, 4, "09:00", "09:45", "115"),
     (fiz, 4, "10:00", "10:45", "Lab 1"),
     (lv,  4, "11:00", "11:45", "202"),
-    # Friday
+
     (ves, 5, "08:00", "08:45", "310"),
     (mat, 5, "09:00", "09:45", "201"),
     (kim, 5, "10:00", "10:45", "Lab 2"),
@@ -108,7 +104,6 @@ for subj, day, start, end, room in schedule:
     ))
 db.commit()
 
-# ── Homework ───────────────────────────────────────────────────────────
 print("Creating homework...")
 today = date.today()
 hw_templates = [
@@ -130,7 +125,6 @@ for student in students:
         ))
 db.commit()
 
-# ── Announcements ──────────────────────────────────────────────────────
 print("Creating announcements...")
 announcements = [
     (admin, "Laipni lūdzam SchoolHub!",

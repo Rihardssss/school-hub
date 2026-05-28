@@ -36,7 +36,7 @@ export default function Users() {
 
   return (
     <Layout title="Lietotāju pārvaldība">
-      {/* Summary chips */}
+      {}
       <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
         {Object.entries(counts).map(([role, n]) => (
           <span key={role} style={{
@@ -59,7 +59,7 @@ export default function Users() {
             borderBottom: i < users.length - 1 ? '1px solid #f1f5f9' : 'none',
             flexWrap: 'wrap',
           }}>
-            {/* Avatar circle */}
+            {}
             <div style={{
               width: 38, height: 38, borderRadius: '50%',
               background: ROLE_COLOR[u.role]?.background || '#f1f5f9',
@@ -70,18 +70,18 @@ export default function Users() {
               {u.full_name?.[0]?.toUpperCase() || '?'}
             </div>
 
-            {/* Name + email */}
+            {}
             <div style={{ flex: 1, minWidth: 160 }}>
               <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>{u.full_name}</div>
               <div style={{ color: '#6b7280', fontSize: '0.82rem' }}>@{u.username} · {u.email}</div>
             </div>
 
-            {/* Joined date */}
+            {}
             <div className="muted" style={{ fontSize: '0.8rem', minWidth: 90 }}>
               {new Date(u.created_at).toLocaleDateString('lv-LV')}
             </div>
 
-            {/* Role dropdown */}
+            {}
             <select
               value={u.role}
               onChange={(e) => changeRole(u.id, e.target.value)}
@@ -95,7 +95,7 @@ export default function Users() {
               <option value="admin">Administrators</option>
             </select>
 
-            {/* Delete */}
+            {}
             <button
               className="btnDanger btnSmall"
               onClick={() => deleteUser(u.id, u.full_name)}

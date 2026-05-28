@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 
-
 class DashboardStats(BaseModel):
     homework_total: int
     homework_pending: int

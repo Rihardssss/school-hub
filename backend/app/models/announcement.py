@@ -3,7 +3,6 @@ from sqlalchemy import Column, String, DateTime, Boolean, ForeignKey, func
 from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
 
-
 class Announcement(Base):
     __tablename__ = "announcements"
 

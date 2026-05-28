@@ -12,7 +12,7 @@ export default function Schedule() {
   const [subjects,    setSubjects]    = useState([]);
   const [selectedDay, setSelectedDay] = useState(1);
 
-  // Form state
+  
   const [fSubjectId, setFSubjectId] = useState('');
   const [fDay,       setFDay]       = useState(1);
   const [fStart,     setFStart]     = useState('09:00');
@@ -59,7 +59,7 @@ export default function Schedule() {
   return (
     <Layout title="Stundu saraksts">
 
-      {/* Day tabs */}
+      {}
       <div className="dayTabs">
         {[1, 2, 3, 4, 5].map((d) => (
           <button
@@ -72,7 +72,7 @@ export default function Schedule() {
         ))}
       </div>
 
-      {/* Entries for selected day */}
+      {}
       <div className="panel stack">
         {dayEntries.length === 0 && (
           <div className="muted">Nav stundu {DAYS[selectedDay].toLowerCase()} dienā.</div>
@@ -93,7 +93,7 @@ export default function Schedule() {
         ))}
       </div>
 
-      {/* Add form — teachers and admins only */}
+      {}
       {canManage && (
         <>
           <h2 style={{ marginTop: 20 }}>Pievienot stundu</h2>

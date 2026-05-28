@@ -11,7 +11,6 @@ from app.utils.auth import get_current_user
 
 router = APIRouter(prefix="/api/messages", tags=["messages"])
 
-
 @router.get("/inbox", response_model=List[MessageResponse])
 def inbox(
     db: Session = Depends(get_db),
@@ -24,7 +23,6 @@ def inbox(
         .all()
     )
 
-
 @router.get("/sent", response_model=List[MessageResponse])
 def sent(
     db: Session = Depends(get_db),
@@ -36,7 +34,6 @@ def sent(
         .order_by(Message.created_at.desc())
         .all()
     )
-
 
 @router.post("", response_model=MessageResponse, status_code=status.HTTP_201_CREATED)
 def send_message(
@@ -61,7 +58,6 @@ def send_message(
     db.refresh(msg)
     return msg
 
-
 @router.patch("/{msg_id}/read", response_model=MessageResponse)
 def mark_read(
     msg_id: UUID,
@@ -79,7 +75,6 @@ def mark_read(
     db.commit()
     db.refresh(msg)
     return msg
-
 
 @router.delete("/{msg_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_message(

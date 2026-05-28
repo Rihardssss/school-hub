@@ -3,7 +3,6 @@ from sqlalchemy import Column, String, DateTime, ForeignKey, func
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from app.database import Base
 
-
 class ActivityLog(Base):
     __tablename__ = "activity_logs"
 

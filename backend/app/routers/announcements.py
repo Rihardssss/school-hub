@@ -11,19 +11,17 @@ from app.models.user import User
 
 router = APIRouter(prefix="/api/announcements", tags=["announcements"])
 
-
 @router.get("", response_model=List[AnnouncementResponse])
 def list_announcements(
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ):
-    # Pinned announcements first, then newest
+
     return (
         db.query(Announcement)
         .order_by(Announcement.is_pinned.desc(), Announcement.created_at.desc())
         .all()
     )
-
 
 @router.post("", response_model=AnnouncementResponse, status_code=status.HTTP_201_CREATED)
 def create_announcement(
@@ -42,7 +40,6 @@ def create_announcement(
     db.commit()
     db.refresh(announcement)
     return announcement
-
 
 @router.put("/{ann_id}", response_model=AnnouncementResponse)
 def update_announcement(
@@ -64,7 +61,6 @@ def update_announcement(
     db.refresh(ann)
     return ann
 
-
 @router.delete("/{ann_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_announcement(
     ann_id: UUID,
@@ -74,7 +70,7 @@ def delete_announcement(
     ann = db.get(Announcement, ann_id)
     if not ann:
         raise HTTPException(status_code=404, detail="Announcement not found")
-    # Admin can delete anyone's; teacher only their own
+
     if current_user.role != "admin" and ann.author_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not allowed to delete this announcement")
 
